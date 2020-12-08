@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jqassistant.contrib.common</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.9.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.jqassistant.contrib.plugin</groupId>
+
+    <artifactId>jqassistant-jmolecules-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>jQAssistant jMolecules Plugin</name>
+
+    <url>http://jqassistant.org/</url>
+    <description>
+        jMolecules Plugin for jQAssistant.
+    </description>
+
+    <organization>
+        <name>BUSCHMAIS GbR</name>
+        <url>http://www.buschmais.com</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>StephanPirnbaum</id>
+            <name>Stephan Pirnbaum</name>
+            <email>stephan.pirnbaum@buschmais.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:jqassistant-contrib/jqassistant-jmolecules-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:jqassistant-contrib/jqassistant-jmolecules-plugin.git
+        </developerConnection>
+        <url>https://github.com/jqassistant-contrib/jqassistant-jmolecules-plugin</url>
+        <tag>1.0.0</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <jqassistant.version>1.9.0-SNAPSHOT</jqassistant.version>
+        <jmolecules.version>1.0.0</jmolecules.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.buschmais.jqassistant.core</groupId>
+            <artifactId>plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.buschmais.jqassistant.plugin</groupId>
+            <artifactId>java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.buschmais.jqassistant.core</groupId>
+            <artifactId>report</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.buschmais.jqassistant.core</groupId>
+            <artifactId>store</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmolecules</groupId>
+            <artifactId>jmolecules-ddd</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmolecules</groupId>
+            <artifactId>jmolecules-layered-architecture</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmolecules</groupId>
+            <artifactId>jmolecules-onion-architecture</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmolecules</groupId>
+            <artifactId>jmolecules-events</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.buschmais.jqassistant.core</groupId>
+            <artifactId>store</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.buschmais.jqassistant.neo4jserver</groupId>
+            <artifactId>neo4jv3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.buschmais.jqassistant.plugin</groupId>
+            <artifactId>common</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.buschmais.jqassistant.plugin</groupId>
+            <artifactId>java</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.buschmais.jqassistant.core</groupId>
+                <artifactId>plugin</artifactId>
+                <version>${jqassistant.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.buschmais.jqassistant.plugin</groupId>
+                <artifactId>java</artifactId>
+                <version>${jqassistant.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.buschmais.jqassistant.core</groupId>
+                <artifactId>report</artifactId>
+                <version>${jqassistant.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.buschmais.jqassistant.core</groupId>
+                <artifactId>store</artifactId>
+                <version>${jqassistant.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jmolecules</groupId>
+                <artifactId>jmolecules-ddd</artifactId>
+                <version>${jmolecules.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jmolecules</groupId>
+                <artifactId>jmolecules-layered-architecture</artifactId>
+                <version>${jmolecules.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jmolecules</groupId>
+                <artifactId>jmolecules-onion-architecture</artifactId>
+                <version>${jmolecules.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jmolecules</groupId>
+                <artifactId>jmolecules-events</artifactId>
+                <version>${jmolecules.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
