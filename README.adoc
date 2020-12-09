@@ -1,0 +1,262 @@
+= jqassistant-jmolecules-plugin
+
+
+The jMolecules Plugin provides concepts to map architectural language elements from the jMolecules project
+(https://github.com/xmolecules/jmolecules) to the graph representation build by jQAssistant
+in order to gain new insights, create additional concepts and constraints.
+
+== Usage of the jQAssistant jMolecules Plugin
+
+Please check the documentation of the jMolecules project to see how architectural concepts can be marked in the source code.
+
+Afterwards, to have jQAssistant consider the annotations and to allow the execution of constraints, following dependency
+in the `jqassistant-maven-plugin` needs to be defined:
+
+[source, xml]
+----
+<plugin>
+    <groupId>com.buschmais.jqassistant</groupId>
+    <artifactId>jqassistant-maven-plugin</artifactId>
+    <version>${jqassistant.version}</version>
+    <executions>
+        <execution>
+            <id>default-cli</id>
+            <goals>
+                <goal>scan</goal>
+                <goal>analyze</goal>
+            </goals>
+        </execution>
+    </executions>
+    <dependencies>
+        <dependency> // <1>
+            <groupId>org.jqassistant.contrib.plugin</groupId>
+            <artifactId>jqassistant-jmolecules-plugin</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+</plugin>
+----
+<1> Definition of the plugin dependency
+
+== Mapping between jMolecules and jQAssistant
+
+jMolecules comes with a set of different sub-projects, each providing annotations and marker interfaces for different
+architectural aspects. 
+
+The `jqassistant-jmolecules-plugin` provides concepts to map the annotations and interfaces to the graph. For each sub-project, there is a jQAssistant rule group containing all relevant concepts and additional constraints. Following is the mapping between jMolecules and jQAssistant.
+
+
+.Mapping between jMolecules and jQAssistant
+[options="header"]
+|====================
+| jMolecules                                 | jQAssistant  
+| jmolecules-architecture-layered            | jmolecules-layered:Default 
+| jmolecules-architecture-onion (Classical)  | jmolecules-onion-classical:Default 
+| jmolecules-architecture-onion (Simplified) | jmolecules-onion-simplified:Default  
+| jmolecules-ddd                             | jmolecules-ddd:Default
+| jmolecules-event                           | jmolecules-event:Default
+|====================
+
+
+In order to make use of the provided concepts, the respective groups need to be added to the plugin configuration as following:
+
+[source, xml]
+----
+<plugin>
+    <groupId>com.buschmais.jqassistant</groupId>
+    <artifactId>jqassistant-maven-plugin</artifactId>
+    <version>${jqassistant.version}</version>
+    <executions>
+        <execution>
+            <id>default-cli</id>
+            <goals>
+                <goal>scan</goal>
+                <goal>analyze</goal>
+            </goals>
+            <configuration>
+                <groups> // <1>
+                    <group>jmolecules-layered:Default</group>
+                    <group>jmolecules-onion-classical:Default</group>
+                    <group>jmolecules-onion-simplified:Default</group>
+                    <group>jmolecules-ddd:Default</group>
+                    <group>jmolecules-event:Default</group>
+                </groups>
+            </configuration>
+        </execution>
+    </executions>
+    <dependencies>
+        <dependency>
+            <groupId>org.jqassistant.contrib.plugin</groupId>
+            <artifactId>jqassistant-jmolecules-plugin</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+</plugin>
+----
+<1> Definition of the rules to be used
+
+== Concepts and Constraints for the Layered Architecture
+* The concepts mentioned in this section are used for `jmolecules-architecture-layered`
+* The concepts mentioned in this section are part of `jmolecules-layered:Default`
+* For each technical layer, a node will be created, to which all types will be associated via a `:CONTAINS` relationship
+
+Supported Annotations and Types:
+
+* InterfaceLayer
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Layered:Layer(name: 'Interface')`
+
+* ApplicationLayer
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Layered:Layer(name: 'Application')`
+
+* DomainLayer
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Layered:Layer(name: 'Domain')`
+
+* InfrastructureLayer
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Layered:Layer(name: 'Infrastructure')`
+
+Additionally, the dependencies between types will be aggregated to the level of Layers including a weight, giving how many dependencies between layers exist.
+
+Constraint:
+
+* jmolecules-layered:TypeInMultipleLayers
+** Checks that each type is part of only one layer
+
+== Concepts for Onion Architecture
+=== Classical Onion Architecture
+
+* The concepts mentioned in this section are used for `jmolecules-architecture-onion`
+* The concepts mentioned in this section are part of `jmolecules-onion-classical:Defaul`
+* For each ring, a node will be created, to which all types will be associated via a `:CONTAINS` relationship
+
+Supported Annotations and Types:
+
+* ApplicationServiceRing
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Onion:Ring(name: 'ApplicationService')`
+
+* DomainServiceRing
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Onion:Ring(name: 'DomainService')`
+
+* DomainModelRing
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Onion:Ring(name: 'DomainModel')`
+
+* InfrastructureRing
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Onion:Ring(name: 'Infrastructure')`
+
+
+Additionally, the dependencies between types will be aggregated to the level of Rings including a weight, giving how many dependencies between rings exist.
+
+Constraint:
+
+* jmolecules-onion-classical:TypeInMultipleRings
+** Checks that each type is part of only one ring
+
+=== Simplified Onion Architecture
+* The concepts mentioned in this section are used for `jmolecules-architecture-onion`
+* The concepts mentioned in this section are part of `jmolecules-onion-simplified:Default`
+* For each ring, a node will be created, to which all types will be associated via a `:CONTAINS` relationship
+
+Supported Annotations and Types:
+
+* ApplicationRing
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Onion:Ring(name: 'Application')`
+
+* DomainRing
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Onion:Ring(name: 'Domain')`
+
+* InfrastructureRing
+** Supported as Package- and Type-Annotation
+** Applied Labels: `:JMolecules:Architecture:Onion:Ring(name: 'Infrastructure')`
+
+Additionally, the dependencies between types will be aggregated to the level of Rings including a weight, giving how many dependencies between rings exist.
+
+Constraint:
+
+* jmolecules-onion-simplified:TypeInMultipleRings
+** Checks that each type is part of only one ring
+
+== Concepts for Domain-Driven Design
+* The concepts mentioned in this section are used for `jmolecules-ddd`
+* The concepts mentioned in this section are part of `jmolecules-ddd:Default`
+
+Supported Annotations and Types:
+
+* AggregateRoot
+** Supported as Type-Annotation and Interface
+** Applied Labels: `:JMolecules:DDD:AggregateRoot`
+
+* BoundedContext
+** Supported as Package-Annotation
+** Per BoundedContext (unique by id), a node will be created representing the bounded context. Types will be linked via a `:CONTAINS` relationship.
+** Applied Labels: `:JMolecules:DDD:BoundedContext`
+** The properties `id`, `name`, and `description` are supported
+** In case the id is missing, the package name will be used
+
+* Entity
+** Supported as Type-Annotation and Interface
+** Applied Labels: `:JMolecules:DDD:Entity`
+
+* Factory
+** Supported as Type-Annotation
+** Applied Labels: `:JMolecules:DDD:Factory`
+
+* Module
+** Supported as Package-Annotation
+** Per Module (unique by id), a node will be created representing the module. Types will be linked via a `:CONTAINS` relationship.
+** Applied Labels: `:JMolecules:DDD:Modules`
+** The properties `id`, `name`, and `description` are supported
+** In case the id is missing, the package name will be used
+
+* Repository
+** Supported as Type-Annotation
+** Applied Labels: `:JMolecules:DDD:Repository`
+
+* Service
+** Supported as Type-Annotation
+** Applied Labels: `:JMolecules:DDD:Service`
+
+* ValueObject
+** Supported as Type-Annotation
+** Applied Labels: `:JMolecules:DDD:ValueObject`
+
+
+Additionally, the dependencies between types will be aggregated to the level of BoundedContexts and Modules including a weight, giving how many dependencies between BoundedContext or Modules, respectively, exist.
+
+Constraint:
+
+* jmolecules-ddd:TypeInMultipleBoundedContexts
+** Checks that each type is part of only one bounded context
+* jmolecules-ddd:TypeInMultipleModules
+** Checks that each type is part of only one module
+
+
+== Concepts for Events
+* The concepts mentioned in this section are used for `jmolecules-event`
+* The concepts mentioned in this section are part of `jmolecules-event:Default`
+
+* DomainEvent
+** Supported as Package- and Type-Annotation and Interface
+** Applied Labels: `:JMolecules:Event:DomainEvent`
+
+== Visual Reporting
+
+The jMolecules plug-in supports visualization of concepts using PlantUML in jQAssistant reports for the following concepts:
+
+* Bounded Context
+* Module
+* Ring (both for classical and simplified Onion Architecture)
+* Layer (Interface, Application, Domain, Infrastructure)
+
+To use this functionality, define the jQAssistant concept with the following property set:
+
+* `reportType="plantuml-component-diagram"`
+

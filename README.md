@@ -1,1 +1,0 @@
-# jqassistant-jmolecules-plugin
