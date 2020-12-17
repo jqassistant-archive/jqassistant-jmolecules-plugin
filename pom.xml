@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jqassistant.contrib.common</groupId>
         <artifactId>parent</artifactId>
-        <version>1.9.0-SNAPSHOT</version>
+        <version>1.9.0</version>
     </parent>
 
     <groupId>org.jqassistant.contrib.plugin</groupId>
@@ -48,7 +48,7 @@
     </licenses>
 
     <properties>
-        <jqassistant.version>1.9.0-SNAPSHOT</jqassistant.version>
+        <jqassistant.version>1.9.0</jqassistant.version>
         <jmolecules.version>1.0.0</jmolecules.version>
     </properties>
 
