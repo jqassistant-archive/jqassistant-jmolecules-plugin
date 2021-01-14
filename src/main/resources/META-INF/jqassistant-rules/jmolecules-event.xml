@@ -45,7 +45,7 @@
             org.jmolecules.event.types.DomainEvent as :JMolecules:Event:DomainEvent.</description>
         <cypher><![CDATA[
             MATCH
-              (domainEvent:Type)-[:EXTENDS]->(event:Type)
+              (domainEvent:Type)-[:EXTENDS|IMPLEMENTS*]->(event:Type)
             WHERE
               event.fqn = "org.jmolecules.event.types.DomainEvent"
             SET

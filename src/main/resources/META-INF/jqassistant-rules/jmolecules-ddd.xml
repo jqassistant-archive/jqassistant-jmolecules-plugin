@@ -37,7 +37,7 @@
             org.jmolecules.ddd.annotation.AggregateRoot as :JMolecules:DDD:AggregateRoot.</description>
         <cypher><![CDATA[
             MATCH
-              (aggregate:Type)-[:IMPLEMENTS|EXTENDS]*->(t:Type)
+              (aggregate:Type)-[:IMPLEMENTS|EXTENDS*]->(t:Type)
             WHERE
               t.fqn = "org.jmolecules.ddd.types.AggregateRoot"
             SET
@@ -65,7 +65,7 @@
         <description>Labels all Java types which extends from org.jmolecules.ddd.annotation.Entity as :JMolecules:DDD:Entity.</description>
         <cypher><![CDATA[
 	        MATCH
-              (entity:Type)-[:IMPLEMENTS|EXTENDS]*->(t:Type)
+              (entity:Type)-[:IMPLEMENTS|EXTENDS*]->(t:Type)
             WHERE
               t.fqn = "org.jmolecules.ddd.types.Entity"
 	        SET

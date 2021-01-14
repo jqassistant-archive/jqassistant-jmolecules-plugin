@@ -5,6 +5,7 @@ import com.buschmais.jqassistant.core.rule.api.model.RuleException;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import org.jqassistant.contrib.plugin.jmolecules.set.entity.Entity1;
+import org.jqassistant.contrib.plugin.jmolecules.set.entity.Entity2;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -22,6 +23,17 @@ public class EntityIT extends AbstractJavaPluginIT {
         List<TypeDescriptor> types = query("MATCH (t:JMolecules:DDD:Entity) RETURN t").getColumn("t");
         assertThat(types.size()).isEqualTo(1);
         assertThat(types.get(0).getName()).isEqualTo("Entity1");
+        store.commitTransaction();
+    }
+
+    @Test
+    public void entityTypeExtends() throws RuleException {
+        scanClasses(Entity2.class);
+        assertEquals(Result.Status.SUCCESS, applyConcept("jmolecules-ddd:EntityExtend").getStatus());
+        store.beginTransaction();
+        List<TypeDescriptor> types = query("MATCH (t:JMolecules:DDD:Entity) RETURN t").getColumn("t");
+        assertThat(types.size()).isEqualTo(1);
+        assertThat(types.get(0).getName()).isEqualTo("Entity2");
         store.commitTransaction();
     }
 
