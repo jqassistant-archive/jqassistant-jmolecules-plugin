@@ -10,6 +10,7 @@ import org.jqassistant.contrib.plugin.jmolecules.set.domainevent.DomainEvent3;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,34 +19,28 @@ public class DomainEventIT extends AbstractJMoleculesPluginIT {
 
     @Test
     public void domainEventType() throws RuleException {
-        scanClasses(DomainEvent1.class);
+        scanClassesAndPackages(DomainEvent1.class);
         assertEquals(Result.Status.SUCCESS, applyConcept("jmolecules-event:DomainEventType").getStatus());
         store.beginTransaction();
-        List<TypeDescriptor> types = query("MATCH (t:JMolecules:Event:DomainEvent) RETURN t").getColumn("t");
-        assertThat(types.size()).isEqualTo(1);
-        assertThat(types.get(0).getName()).isEqualTo("DomainEvent1");
+        List<Map<String, Object>> rows = query("MATCH (t:JMolecules:Event:DomainEvent) RETURN t.name AS name, t.eventName AS eventName, t.eventNamespace AS eventNamespace ORDER BY t.fqn").getRows();
+        assertThat(rows.size()).isEqualTo(2);
+        assertThat(rows.get(0).get("name")).isEqualTo("DomainEvent1");
+        assertThat(rows.get(0).get("eventName")).isEqualTo("DomainEvent1");
+        assertThat(rows.get(0).get("eventNamespace")).isEqualTo("org.jqassistant.contrib.plugin.jmolecules.set.domainevent");
+        assertThat(rows.get(1).get("name")).isEqualTo("DomainEvent3");
+        assertThat(rows.get(1).get("eventName")).isEqualTo("Event3");
+        assertThat(rows.get(1).get("eventNamespace")).isEqualTo("test-namespace");
         store.commitTransaction();
     }
 
     @Test
     public void domainEventExtend() throws RuleException {
-        scanClasses(DomainEvent2.class);
+        scanClassesAndPackages(DomainEvent2.class);
         assertEquals(Result.Status.SUCCESS, applyConcept("jmolecules-event:DomainEventExtend").getStatus());
         store.beginTransaction();
         List<TypeDescriptor> types = query("MATCH (t:JMolecules:Event:DomainEvent) RETURN t").getColumn("t");
         assertThat(types.size()).isEqualTo(1);
         assertThat(types.get(0).getName()).isEqualTo("DomainEvent2");
-        store.commitTransaction();
-    }
-
-    @Test
-    public void domainEventPackage() throws RuleException {
-        scanClassesAndPackages(DomainEvent3.class);
-        assertEquals(Result.Status.SUCCESS, applyConcept("jmolecules-event:DomainEventPackage").getStatus());
-        store.beginTransaction();
-        List<TypeDescriptor> types = query("MATCH (t:JMolecules:Event:DomainEvent) RETURN t ORDER BY t.name").getColumn("t");
-        assertThat(types.size()).isEqualTo(4);
-        assertThat(types.get(2).getName()).isEqualTo("DomainEvent3");
         store.commitTransaction();
     }
 

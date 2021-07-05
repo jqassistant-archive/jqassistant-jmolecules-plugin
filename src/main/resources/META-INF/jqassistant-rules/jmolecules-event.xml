@@ -1,42 +1,34 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
 
     <group id="jmolecules-event:Default">
-        <includeConcept refId="jmolecules-event:DomainEventPackage" severity="info"/>
         <includeConcept refId="jmolecules-event:DomainEventType" severity="info"/>
         <includeConcept refId="jmolecules-event:DomainEventExtend" severity="info"/>
     </group>
-
-    <concept id="jmolecules-event:DomainEventPackage">
-        <description>Labels all Java types which are located in a package annotated by org.jmolecules.event.annotation.DomainEvent as :JMolecules:Event:DomainEvent.</description>
-        <cypher><![CDATA[
-	        MATCH
-              (domainEventPackage:Package)-[:CONTAINS]->(packageInfo:Type)-[:ANNOTATED_BY]->(a)-[:OF_TYPE]->(annotation:Type)
-            WHERE
-              annotation.fqn = "org.jmolecules.event.annotation.DomainEvent"
-              AND packageInfo.sourceFileName = "package-info.java"
-            WITH
-              domainEventPackage
-            MATCH
-              (domainEventPackage)-[:CONTAINS*]->(domainEvent:Type)
-	        SET
-  	          domainEvent:JMolecules:Event:DomainEvent
-            RETURN
-              domainEvent AS DomainEvent
-        ]]></cypher>
-    </concept>
 
     <concept id="jmolecules-event:DomainEventType">
         <description>Labels all Java types which are annotated by
             org.jmolecules.event.annotation.DomainEvent as :JMolecules:Event:DomainEvent.</description>
         <cypher><![CDATA[
             MATCH
-              (domainEvent:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
+                (p:Package)-[:CONTAINS]->(e:Type)-[:ANNOTATED_BY]->(a)-[:OF_TYPE]->(annotation:Type)
             WHERE
-              annotation.fqn = "org.jmolecules.event.annotation.DomainEvent"
+                annotation.fqn = "org.jmolecules.event.annotation.DomainEvent"
             SET
-              domainEvent:JMolecules:Event:DomainEvent
+                e:JMolecules:Event:DomainEvent
+            WITH
+                p, e, a
+            OPTIONAL MATCH
+                (a)-[:HAS]->(namespace:Value{name: "namespace"})
+            SET
+                e.eventNamespace = coalesce(namespace.value, p.fqn)
+            WITH
+                e, a
+            OPTIONAL MATCH
+                (a)-[:HAS]->(name:Value{name: "name"})
+            SET
+                e.eventName = coalesce(name.value, e.name)
             RETURN
-              domainEvent AS DomainEvent
+                e AS DomainEvent
         ]]></cypher>
     </concept>
 
@@ -45,11 +37,13 @@
             org.jmolecules.event.types.DomainEvent as :JMolecules:Event:DomainEvent.</description>
         <cypher><![CDATA[
             MATCH
-              (domainEvent:Type)-[:EXTENDS|IMPLEMENTS*]->(event:Type)
+              (p:Package)-[:CONTAINS]->(domainEvent:Type)-[:EXTENDS|IMPLEMENTS*]->(event:Type)
             WHERE
               event.fqn = "org.jmolecules.event.types.DomainEvent"
             SET
-              domainEvent:JMolecules:Event:DomainEvent
+              domainEvent:JMolecules:Event:DomainEvent,
+              domainEvent.eventNamespace = p.fqn,
+              domainEvent.eventName = domainEvent.name
             RETURN
               domainEvent AS DomainEvent
         ]]></cypher>
