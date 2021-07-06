@@ -219,7 +219,7 @@ Supported Annotations and Types:
 ** In case the id is missing, the package name will be used
 
 * Repository
-** Supported as Type-Annotation
+** Supported as Type-Annotation and Interface
 ** Applied Labels: `:JMolecules:DDD:Repository`
 
 * Service

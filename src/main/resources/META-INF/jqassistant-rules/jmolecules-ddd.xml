@@ -7,6 +7,7 @@
         <includeConcept refId="jmolecules-ddd:EntityExtend" severity="info"/>
         <includeConcept refId="jmolecules-ddd:FactoryType" severity="info"/>
         <includeConcept refId="jmolecules-ddd:RepositoryType" severity="info"/>
+        <includeConcept refId="jmolecules-ddd:RepositoryExtend" severity="info"/>
         <includeConcept refId="jmolecules-ddd:ServiceType" severity="info"/>
         <includeConcept refId="jmolecules-ddd:ValueObjectType" severity="info"/>
         <includeConcept refId="jmolecules-ddd:BoundedContextPackage" severity="info"/>
@@ -98,6 +99,21 @@
               (repository:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
             WHERE
               annotation.fqn = "org.jmolecules.ddd.annotation.Repository"
+            SET
+              repository:JMolecules:DDD:Repository
+            RETURN
+              repository AS Repository
+        ]]></cypher>
+    </concept>
+
+    <concept id="jmolecules-ddd:RepositoryExtend">
+        <description>Labels all Java types which extend from
+            org.jmolecules.ddd.types.Repository as :JMolecules:DDD:Repository.</description>
+        <cypher><![CDATA[
+            MATCH
+              (repository:Type)-[:IMPLEMENTS|EXTENDS*]->(t:Type)
+            WHERE
+              t.fqn = "org.jmolecules.ddd.types.Repository"
             SET
               repository:JMolecules:DDD:Repository
             RETURN

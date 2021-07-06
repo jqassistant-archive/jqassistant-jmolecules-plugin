@@ -5,6 +5,7 @@ import com.buschmais.jqassistant.core.rule.api.model.RuleException;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import org.jqassistant.contrib.plugin.jmolecules.set.repository.Repository1;
+import org.jqassistant.contrib.plugin.jmolecules.set.repository.Repository2;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -21,6 +22,17 @@ public class RepositoryIT extends AbstractJavaPluginIT {
         List<TypeDescriptor> types = query("MATCH (t:JMolecules:DDD:Repository) RETURN t").getColumn("t");
         assertThat(types.size()).isEqualTo(1);
         assertThat(types.get(0).getName()).isEqualTo("Repository1");
+        store.commitTransaction();
+    }
+
+    @Test
+    public void repositoryExtend() throws RuleException {
+        scanClasses(Repository2.class);
+        assertThat(applyConcept("jmolecules-ddd:RepositoryExtend").getStatus()).isEqualTo(Result.Status.SUCCESS);
+        store.beginTransaction();
+        List<TypeDescriptor> types = query("MATCH (t:JMolecules:DDD:Repository) RETURN t").getColumn("t");
+        assertThat(types.size()).isEqualTo(1);
+        assertThat(types.get(0).getName()).isEqualTo("Repository2");
         store.commitTransaction();
     }
 
