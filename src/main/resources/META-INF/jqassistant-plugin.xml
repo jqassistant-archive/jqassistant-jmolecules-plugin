@@ -12,6 +12,7 @@
         <class>org.jqassistant.contrib.plugin.jmolecules.descriptor.ddd.ModuleDescriptor</class>
     </model>
     <rules>
+        <resource>jmolecules-cqrs.xml</resource>
         <resource>jmolecules-ddd.xml</resource>
         <resource>jmolecules-event.xml</resource>
         <resource>jmolecules-layered.xml</resource>

@@ -43,16 +43,4 @@ public class DomainEventPublisherIT extends AbstractJMoleculesPluginIT {
         store.commitTransaction();
     }
 
-    @Test
-    public void domainEventHandlerHandlesByParameter() throws RuleException {
-        scanClassesAndPackages(DomainEvent2.class);
-        assertEquals(Result.Status.SUCCESS, applyConcept("jmolecules-event:DomainEventHandlerHandlesByParameter").getStatus());
-        store.beginTransaction();
-        List<Map<String, Object>> rows = query("MATCH (h:JMolecules:Event:DomainEventHandler)-[:HANDLES]->(e:JMolecules:Event:DomainEvent) RETURN h.name AS handler, e.name AS event ORDER BY handler, event").getRows();
-        assertThat(rows.size()).isEqualTo(1);
-        assertThat(rows.get(0).get("handler")).isEqualTo("handles3");
-        assertThat(rows.get(0).get("event")).isEqualTo("DomainEvent2");
-        store.commitTransaction();
-    }
-
 }
