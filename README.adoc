@@ -31,7 +31,7 @@ in the `jqassistant-maven-plugin` needs to be defined:
         <dependency> // <1>
             <groupId>org.jqassistant.contrib.plugin</groupId>
             <artifactId>jqassistant-jmolecules-plugin</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -49,10 +49,11 @@ The `jqassistant-jmolecules-plugin` provides concepts to map the annotations and
 .Mapping between jMolecules and jQAssistant
 [options="header"]
 |====================
-| jMolecules                                 | jQAssistant  
-| jmolecules-architecture-layered            | jmolecules-layered:Default 
-| jmolecules-architecture-onion (Classical)  | jmolecules-onion-classical:Default 
-| jmolecules-architecture-onion (Simplified) | jmolecules-onion-simplified:Default  
+| jMolecules                                 | jQAssistant
+| jmolecules-cqrs-architecute                | jmolecules-cqrs:Default
+| jmolecules-layered-architecture            | jmolecules-layered:Default
+| jmolecules-onion-architecture (Classical)  | jmolecules-onion-classical:Default
+| jmolecules-onion-architecture (Simplified) | jmolecules-onion-simplified:Default
 | jmolecules-ddd                             | jmolecules-ddd:Default
 | jmolecules-event                           | jmolecules-event:Default
 |====================
@@ -75,6 +76,7 @@ In order to make use of the provided concepts, the respective groups need to be 
             </goals>
             <configuration>
                 <groups> // <1>
+                    <group>jmolecules-cqrs:Default</group>
                     <group>jmolecules-layered:Default</group>
                     <group>jmolecules-onion-classical:Default</group>
                     <group>jmolecules-onion-simplified:Default</group>
@@ -88,7 +90,7 @@ In order to make use of the provided concepts, the respective groups need to be 
         <dependency>
             <groupId>org.jqassistant.contrib.plugin</groupId>
             <artifactId>jqassistant-jmolecules-plugin</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -129,7 +131,7 @@ Constraint:
 === Classical Onion Architecture
 
 * The concepts mentioned in this section are used for `jmolecules-architecture-onion`
-* The concepts mentioned in this section are part of `jmolecules-onion-classical:Defaul`
+* The concepts mentioned in this section are part of `jmolecules-onion-classical:Default`
 * For each ring, a node will be created, to which all types will be associated via a `:CONTAINS` relationship
 
 Supported Annotations and Types:
@@ -238,17 +240,62 @@ Constraint:
 * jmolecules-ddd:TypeInMultipleModules
 ** Checks that each type is part of only one module
 
+== Concepts for CQRS
+* The concepts mentioned in this section are used for `jmolecules-cqrs`
+* The concepts mentioned in this section are part of `jmolecules-cqrs:Default`
+
+* QueryModel
+** Supported as Type-Annotation
+** Applied Labels: `:JMolecules:CQRS:QueryModel`
+
+* Command
+** Supported as Type-Annotation
+** Applied Labels: `:JMolecules:CQRS:Command`
+** The properties `name` and `namespace` are supported, they'll be added to the type node as `commandName` and `commandNamespace`, respectively
+*** Default values for `commandName`: Simple Type Name of the annotated class
+*** Default values for `commandNamespace`: Fully-qualified name of the package containing the annotated class
+
+* CommandHandler
+** Supported as Method-Annotation
+** Applied Labels: `JMolecules:CQRS:CommandHandler`
+** The properties `name` and `namespace` are supported to match the handled commands, '*' is allowed as a placeholder to match all
+** The relationship `(:CommandHandler)-[:HANDLES]->(:Command)` is established via the specified properties, or, alternatively, via the method parameter
+*** See the official jMolecules JavaDoc for further details
+
+* CommandDispatcher
+** Supported as Method-Annotation
+** Applied Labels: `:JMolecules:CQRS:CommandDispatcher`
+** The property `dispatches` is supported to match the published command via '<namespace>.<name>'
+*** See the official jMolecules JavaDoc for further details
 
 == Concepts for Events
 * The concepts mentioned in this section are used for `jmolecules-event`
 * The concepts mentioned in this section are part of `jmolecules-event:Default`
 
 * DomainEvent
-** Supported as Package- and Type-Annotation and Interface
+** Supported as Type-Annotation and Interface
 ** Applied Labels: `:JMolecules:Event:DomainEvent`
+** The properties `name` and `namespace` are supported, they'll be added to the type node as `eventName` and `eventNamespace`, respectively
+*** Default values for `eventName`: Simple Type Name of the annotated class
+*** Default values for `eventNamespace`: Fully-qualified name of the package containing the annotated class
+
+* DomainEventHandler
+** Supported as Method-Annotation
+** Applied Labels: `JMolecules:Event:DomainEventHandler`
+** The properties `name` and `namespace` are supported to match the handled events, '*' is allowed as a placeholder to match all
+** The relationship `(:DomainEventHandler)-[:HANDLES]->(:DomainEvent)` is established via the specified properties, or, alternatively, via the method parameter
+*** See the official jMolecules JavaDoc for further details
+
+* DomainEventPublisher
+** Supported as Method-Annotation
+** Applied Labels: `:JMolecules:Event:DomainEventPublisher`
+** The property `publishes` is supported to match the published event via '<namespace>.<name>'
+*** See the official jMolecules JavaDoc for further details
+** The property `type` is supported and will be enriched on the `:PUBLISHES` relationship
 
 == Visual Reporting
 
+=== PlantUML-Reporting
 The jMolecules plug-in supports visualization of concepts using PlantUML in jQAssistant reports for the following concepts:
 
 * Bounded Context
@@ -260,3 +307,8 @@ To use this functionality, define the jQAssistant concept with the following pro
 
 * `reportType="plantuml-component-diagram"`
 
+=== Context Mapper-Reporting
+
+The jMolecules plug-in works well with the `jqassistant-context-mapper-plugin` to visualize Bounded Contexts identified via jMolecules as a context map.
+
+For further details, see the project page at: https://github.com/jqassistant-contrib/jqassistant-context-mapper-plugin
