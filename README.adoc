@@ -31,7 +31,7 @@ in the `jqassistant-maven-plugin` needs to be defined:
         <dependency> // <1>
             <groupId>org.jqassistant.contrib.plugin</groupId>
             <artifactId>jqassistant-jmolecules-plugin</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -90,7 +90,7 @@ In order to make use of the provided concepts, the respective groups need to be 
         <dependency>
             <groupId>org.jqassistant.contrib.plugin</groupId>
             <artifactId>jqassistant-jmolecules-plugin</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
 </plugin>
