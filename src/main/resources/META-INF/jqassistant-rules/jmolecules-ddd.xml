@@ -13,6 +13,7 @@
         <includeConcept refId="jmolecules-ddd:RepositoryExtend" severity="info"/>
         <includeConcept refId="jmolecules-ddd:ServiceType" severity="info"/>
         <includeConcept refId="jmolecules-ddd:ValueObjectType" severity="info"/>
+        <includeConcept refId="jmolecules-ddd:ValueObjectExtend" severity="info"/>
         <includeConcept refId="jmolecules-ddd:BoundedContextPackage" severity="info"/>
         <includeConcept refId="jmolecules-ddd:BoundedContextDependency" severity="info"/>
         <includeConcept refId="jmolecules-ddd:ModulePackage" severity="info"/>
@@ -209,6 +210,22 @@
               (valueObject:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
             WHERE
               annotation.fqn = "org.jmolecules.ddd.annotation.ValueObject"
+            SET
+              valueObject:JMolecules:DDD:ValueObject
+            RETURN
+              valueObject AS ValueObject
+        ]]></cypher>
+    </concept>
+
+    <concept id="jmolecules-ddd:ValueObjectExtend">
+        <description>Labels all Java types which extend from org.jmolecules.ddd.types.ValueObject as
+            :JMolecules:DDD:ValueObject.
+        </description>
+        <cypher><![CDATA[
+            MATCH
+              (valueObject:Type)-[:IMPLEMENTS|EXTENDS*]->(t:Type)
+            WHERE
+              t.fqn = "org.jmolecules.ddd.types.ValueObject"
             SET
               valueObject:JMolecules:DDD:ValueObject
             RETURN

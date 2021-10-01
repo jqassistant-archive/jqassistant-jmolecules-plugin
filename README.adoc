@@ -235,7 +235,7 @@ Supported Annotations and Types:
 ** Applied Labels: `:JMolecules:DDD:Service`
 
 * ValueObject
-** Supported as Type-Annotation
+** Supported as Type-Annotation and Interface
 ** Applied Labels: `:JMolecules:DDD:ValueObject`
 
 
