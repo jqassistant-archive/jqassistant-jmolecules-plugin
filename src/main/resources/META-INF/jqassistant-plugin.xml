@@ -1,4 +1,4 @@
-<jqa-plugin:jqassistant-plugin xmlns:jqa-plugin="http://www.buschmais.com/jqassistant/core/plugin/schema/v1.4" name="Java DDD">
+<jqassistant-plugin xmlns="http://schema.jqassistant.org/plugin/v1.10" name="jQAssistant jMolecules Plug-In">
     <description>Provides shared rules for jMolecules.</description>
     <model>
         <class>org.jqassistant.contrib.plugin.jmolecules.descriptor.JMoleculesDescriptor</class>
@@ -19,4 +19,4 @@
         <resource>jmolecules-onion-simplified.xml</resource>
         <resource>jmolecules-onion-classical.xml</resource>
     </rules>
-</jqa-plugin:jqassistant-plugin>
+</jqassistant-plugin>

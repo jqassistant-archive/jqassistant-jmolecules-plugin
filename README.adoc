@@ -207,6 +207,14 @@ Supported Annotations and Types:
 ** Supported as Type-Annotation and Interface
 ** Applied Labels: `:JMolecules:DDD:Entity`
 
+* Identifier
+** Supported as Interface
+** Applied Labels: `:JMolecules:DDD:Identifier
+
+* Identity
+** Supported as Field-Annotation and via `Entity` and `AggregateRoot`-Interfaces (return type of the implemented `getId`-Method)
+** Created relationships: `:IDENTIFIED_BY`
+
 * Factory
 ** Supported as Type-Annotation
 ** Applied Labels: `:JMolecules:DDD:Factory`

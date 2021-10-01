@@ -1,4 +1,4 @@
-<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
+<jqassistant-rules xmlns="http://schema.jqassistant.org/rule/v1.10">
 
     <group id="jmolecules-ddd:Default">
         <includeConcept refId="jmolecules-ddd:AggregateRootType" severity="info"/>
@@ -6,6 +6,9 @@
         <includeConcept refId="jmolecules-ddd:EntityType" severity="info"/>
         <includeConcept refId="jmolecules-ddd:EntityExtend" severity="info"/>
         <includeConcept refId="jmolecules-ddd:FactoryType" severity="info"/>
+        <includeConcept refId="jmolecules-ddd:IdentifierExtend" severity="info"/>
+        <includeConcept refId="jmolecules-ddd:IdentifiedByFieldAnnotation" severity="info"/>
+        <includeConcept refId="jmolecules-ddd:IdentifiedByMethod" severity="info"/>
         <includeConcept refId="jmolecules-ddd:RepositoryType" severity="info"/>
         <includeConcept refId="jmolecules-ddd:RepositoryExtend" severity="info"/>
         <includeConcept refId="jmolecules-ddd:ServiceType" severity="info"/>
@@ -20,7 +23,8 @@
 
     <concept id="jmolecules-ddd:AggregateRootType">
         <description>Labels all Java types which are annotated by
-            org.jmolecules.ddd.annotation.AggregateRoot as :JMolecules:DDD:AggregateRoot.</description>
+            org.jmolecules.ddd.annotation.AggregateRoot as :JMolecules:DDD:AggregateRoot.
+        </description>
         <cypher><![CDATA[
             MATCH
               (aggregate:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
@@ -35,7 +39,8 @@
 
     <concept id="jmolecules-ddd:AggregateRootExtend">
         <description>Labels all Java types which extend from
-            org.jmolecules.ddd.annotation.AggregateRoot as :JMolecules:DDD:AggregateRoot.</description>
+            org.jmolecules.ddd.annotation.AggregateRoot as :JMolecules:DDD:AggregateRoot.
+        </description>
         <cypher><![CDATA[
             MATCH
               (aggregate:Type)-[:IMPLEMENTS|EXTENDS*]->(t:Type)
@@ -49,7 +54,9 @@
     </concept>
 
     <concept id="jmolecules-ddd:EntityType">
-        <description>Labels all Java types which are annotated by org.jmolecules.ddd.annotation.Entity as :JMolecules:DDD:Entity.</description>
+        <description>Labels all Java types which are annotated by org.jmolecules.ddd.annotation.Entity as
+            :JMolecules:DDD:Entity.
+        </description>
         <cypher><![CDATA[
 	        MATCH
               (entity:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
@@ -63,7 +70,9 @@
     </concept>
 
     <concept id="jmolecules-ddd:EntityExtend">
-        <description>Labels all Java types which extends from org.jmolecules.ddd.annotation.Entity as :JMolecules:DDD:Entity.</description>
+        <description>Labels all Java types which extend from org.jmolecules.ddd.annotation.Entity as
+            :JMolecules:DDD:Entity.
+        </description>
         <cypher><![CDATA[
 	        MATCH
               (entity:Type)-[:IMPLEMENTS|EXTENDS*]->(t:Type)
@@ -78,7 +87,8 @@
 
     <concept id="jmolecules-ddd:FactoryType">
         <description>Labels all Java types which are annotated by
-            org.jmolecules.ddd.annotation.Factory as :JMolecules:DDD:Factory.</description>
+            org.jmolecules.ddd.annotation.Factory as :JMolecules:DDD:Factory.
+        </description>
         <cypher><![CDATA[
             MATCH
               (factory:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
@@ -91,9 +101,61 @@
         ]]></cypher>
     </concept>
 
+    <concept id="jmolecules-ddd:IdentifierExtend">
+        <description>Labels all Java types which extend from org.jmolecules.ddd.types.Identifier as
+            :JMolecules:DDD:Identifier.
+        </description>
+        <cypher><![CDATA[
+	        MATCH
+              (identifier:Type)-[:IMPLEMENTS|EXTENDS*]->(t:Type)
+            WHERE
+              t.fqn = "org.jmolecules.ddd.types.Identifier"
+	        SET
+  	          identifier:JMolecules:DDD:Identifier
+            RETURN
+              identifier AS Identifier
+        ]]></cypher>
+    </concept>
+
+    <concept id="jmolecules-ddd:IdentifiedByFieldAnnotation">
+        <description>Merges a :IDENTIFIED_BY relationship for each field annotated by
+            org.jmolecules.ddd.annotation.Identity between the defining type and the field type.
+        </description>
+        <cypher><![CDATA[
+	        MATCH
+              (t:Type)-[:DECLARES]->(f:Field)-[:OF_TYPE]->(identifier:Type),
+              (f)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(:Type{fqn: "org.jmolecules.ddd.annotation.Identity"})
+            MERGE
+              (t)-[:IDENTIFIED_BY]->(identifier)
+            RETURN
+              t AS Type, identifier AS Identifier
+        ]]></cypher>
+    </concept>
+
+    <concept id="jmolecules-ddd:IdentifiedByMethod">
+        <requiresConcept refId="java:MethodOverrides"/>
+        <description>Merges a :IDENTIFIED_BY relationship for each AggregateRoot and Entity that overrides the getId
+            method between the defining type and the method return type
+        </description>
+        <cypher><![CDATA[
+	        MATCH
+              (t:Type)-[:EXTENDS|IMPLEMENTS*]->(j:Type),
+              (t)-[:DECLARES]->(m:Method)-[:RETURNS]->(identifier:Type)
+            WHERE
+              j.fqn IN ["org.jmolecules.ddd.types.AggregateRoot", "org.jmolecules.ddd.types.Entity"] AND
+              m.signature ENDS WITH "getId()" AND
+              (NOT exists(m.synthetic) OR m.synthetic = false)
+            MERGE
+              (t)-[:IDENTIFIED_BY]->(identifier)
+            RETURN
+              t AS Type, identifier AS Identifier
+        ]]></cypher>
+    </concept>
+
     <concept id="jmolecules-ddd:RepositoryType">
         <description>Labels all Java types which are annotated by
-            org.jmolecules.ddd.annotation.Repository as :JMolecules:DDD:Repository.</description>
+            org.jmolecules.ddd.annotation.Repository as :JMolecules:DDD:Repository.
+        </description>
         <cypher><![CDATA[
             MATCH
               (repository:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
@@ -108,7 +170,8 @@
 
     <concept id="jmolecules-ddd:RepositoryExtend">
         <description>Labels all Java types which extend from
-            org.jmolecules.ddd.types.Repository as :JMolecules:DDD:Repository.</description>
+            org.jmolecules.ddd.types.Repository as :JMolecules:DDD:Repository.
+        </description>
         <cypher><![CDATA[
             MATCH
               (repository:Type)-[:IMPLEMENTS|EXTENDS*]->(t:Type)
@@ -123,7 +186,8 @@
 
     <concept id="jmolecules-ddd:ServiceType">
         <description>Labels all Java types which are annotated by
-            org.jmolecules.ddd.annotation.Service as :JMolecules:DDD:Service.</description>
+            org.jmolecules.ddd.annotation.Service as :JMolecules:DDD:Service.
+        </description>
         <cypher><![CDATA[
             MATCH
               (service:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
@@ -138,7 +202,8 @@
 
     <concept id="jmolecules-ddd:ValueObjectType">
         <description>Labels all Java types which are annotated by
-            org.jmolecules.ddd.annotation.ValueObject as :JMolecules:DDD:ValueObject.</description>
+            org.jmolecules.ddd.annotation.ValueObject as :JMolecules:DDD:ValueObject.
+        </description>
         <cypher><![CDATA[
             MATCH
               (valueObject:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotation:Type)
@@ -153,7 +218,8 @@
 
     <concept id="jmolecules-ddd:BoundedContextPackage">
         <description>Maps all Java types which are located in a package annotated by
-            org.jmolecules.ddd.annotation.BoundedContext to the corresponding BoundedContext node.</description>
+            org.jmolecules.ddd.annotation.BoundedContext to the corresponding BoundedContext node.
+        </description>
         <cypher><![CDATA[
             MATCH
               (bCPackage:Package)-[:CONTAINS]->(packageInfo:Type)-[:ANNOTATED_BY]->(a)-[:OF_TYPE]->(annotation:Type)
@@ -195,7 +261,9 @@
 
     <concept id="jmolecules-ddd:BoundedContextDependency">
         <requiresConcept refId="jmolecules-ddd:BoundedContextPackage"/>
-        <description>Propagates the dependencies between Types of different Bounded Contexts to the level of Bounded Contexts including an aggregated weight.</description>
+        <description>Propagates the dependencies between Types of different Bounded Contexts to the level of Bounded
+            Contexts including an aggregated weight.
+        </description>
         <cypher><![CDATA[
             MATCH
               (boundedContext1:JMolecules:DDD:BoundedContext)-[:CONTAINS]->(contextType1:Type),
@@ -212,7 +280,8 @@
 
     <concept id="jmolecules-ddd:ModulePackage">
         <description>Maps all Java types which are located in a package annotated by
-            org.jmolecules.ddd.annotation.Module to the corresponding Module node.</description>
+            org.jmolecules.ddd.annotation.Module to the corresponding Module node.
+        </description>
         <cypher><![CDATA[
             MATCH
               (mPackage:Package)-[:CONTAINS]->(packageInfo:Type)-[:ANNOTATED_BY]->(a)-[:OF_TYPE]->(annotation:Type)
@@ -254,7 +323,9 @@
 
     <concept id="jmolecules-ddd:ModuleDependency">
         <requiresConcept refId="jmolecules-ddd:ModulePackage"/>
-        <description>Propagates the dependencies between Types of different Modules to the level of Module including an aggregated weight.</description>
+        <description>Propagates the dependencies between Types of different Modules to the level of Module including an
+            aggregated weight.
+        </description>
         <cypher><![CDATA[
             MATCH
               (m1:JMolecules:DDD:Module)-[:CONTAINS]->(mType1:Type),
@@ -299,4 +370,4 @@
         ]]></cypher>
     </constraint>
 
-</jqa:jqassistant-rules>
+</jqassistant-rules>

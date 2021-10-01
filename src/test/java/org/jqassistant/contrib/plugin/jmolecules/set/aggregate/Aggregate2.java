@@ -9,7 +9,7 @@ public class Aggregate2 implements AggregateRoot<Aggregate2, Aggregate2.Aggregat
         return null;
     }
 
-    class Aggregate2Identifier implements Identifier {
+    public static class Aggregate2Identifier implements Identifier {
 
     }
 }
