@@ -14,9 +14,13 @@
     <rules>
         <resource>jmolecules-cqrs.xml</resource>
         <resource>jmolecules-ddd.xml</resource>
+        <resource>jmolecules-ddd-strict.xml</resource>
         <resource>jmolecules-event.xml</resource>
         <resource>jmolecules-layered.xml</resource>
+        <resource>jmolecules-layered-strict.xml</resource>
         <resource>jmolecules-onion-simplified.xml</resource>
+        <resource>jmolecules-onion-simplified-strict.xml</resource>
         <resource>jmolecules-onion-classical.xml</resource>
+        <resource>jmolecules-onion-classical-strict.xml</resource>
     </rules>
 </jqassistant-plugin>

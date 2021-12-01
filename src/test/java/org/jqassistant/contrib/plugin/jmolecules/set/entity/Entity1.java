@@ -10,6 +10,14 @@ public class Entity1 {
     @Identity
     Entity1Identifier id;
 
+    public Entity1(Entity1Identifier id) {
+        this.id = id;
+    }
+
+    public void setId(Entity1Identifier id) {
+        this.id = id;
+    }
+
     public static class Entity1Identifier implements Identifier {
 
     }
