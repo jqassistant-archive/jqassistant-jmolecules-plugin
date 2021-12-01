@@ -283,6 +283,7 @@ Constraint:
 * jmolecules-ddd:IllegalDependenciesBetweenBoundedContexts (strict-group)
 ** Checks that `:DEPENDS_ON` relations between `:BoundedContext` nodes only exist where also `:DEFINES_DEPENDENCY` exists
 ** Note: Allowed dependencies need to be provided using a custom concept which specifies the provided concept: `jmolecules-ddd:AllowedBoundedContextDependency`
+** Note: This can also be accomplished by using the https://github.com/jqassistant-contrib/jqassistant-context-mapper-plugin[jqassistant-context-mapper-plugin]
 
 == Concepts for CQRS
 * The concepts mentioned in this section are used for `jmolecules-cqrs`
@@ -355,4 +356,4 @@ To use this functionality, define the jQAssistant concept with the following pro
 
 The jMolecules plug-in works well with the `jqassistant-context-mapper-plugin` to visualize Bounded Contexts identified via jMolecules as a context map.
 
-For further details, see the project page at: https://github.com/jqassistant-contrib/jqassistant-context-mapper-plugin
+For further details, see the https://github.com/jqassistant-contrib/jqassistant-context-mapper-plugin[project page].

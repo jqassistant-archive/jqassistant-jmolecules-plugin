@@ -70,7 +70,7 @@
             (t1)-[:DEPENDS_ON]->(t2)
           WHERE
             dependentBC <> dependencyBC AND
-            NOT EXISTS((dependentBC)-[:DEFINES_DEPENDENCY]->(dependencyBC))
+            NOT EXISTS((:BoundedContext{name: dependentBC.name})-[:DEFINES_DEPENDENCY]->(:BoundedContext{name: dependencyBC.name}))
           RETURN
             dependentBC AS SourceBoundedContext, dependencyBC AS TargetBoundedContext, t1 AS SourceType, t2 AS TargetType
           ORDER BY
