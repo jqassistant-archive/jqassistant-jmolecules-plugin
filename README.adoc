@@ -1,5 +1,6 @@
 = jqassistant-jmolecules-plugin
 
+NOTE: This project has been archived and is no longer actively developed. It has been superseded by the https://github.com/jqassistant-plugin/jqassistant-jmolecules-plugin[jqassistant-jmolecules-plugin]
 
 The jMolecules Plugin provides concepts to map architectural language elements from the jMolecules project
 (https://github.com/xmolecules/jmolecules) to the graph representation build by jQAssistant
